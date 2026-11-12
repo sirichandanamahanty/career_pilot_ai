@@ -19,6 +19,7 @@ def connection_settings(with_database=True):
     settings = {
         "host": os.getenv("DB_HOST", "localhost"),
         "user": os.getenv("DB_USER", "root"),
+        "port": int(os.getenv("DB_PORT", "3306")),
         "password": os.getenv("DB_PASSWORD", ""),
         "autocommit": False,
     }
