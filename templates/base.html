@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Dashboard{% endblock %} · CareerPilot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="wrap header-inner">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brand-mark">C</span>
+                <span>CareerPilot</span>
+            </a>
+            {% set ep = request.endpoint %}
+            <nav class="nav">
+                <a class="{{ 'active' if ep == 'index' else '' }}" href="{{ url_for('index') }}">Dashboard</a>
+                <a class="{{ 'active' if ep in ['students_list', 'student_new', 'student_edit'] else '' }}" href="{{ url_for('students_list') }}">Students</a>
+                <a class="{{ 'active' if ep in ['skills_list', 'skill_new', 'skill_edit'] else '' }}" href="{{ url_for('skills_list') }}">Skills</a>
+                <a class="{{ 'active' if ep in ['courses_list', 'course_new', 'course_edit'] else '' }}" href="{{ url_for('courses_list') }}">Courses</a>
+                <a class="{{ 'active' if ep == 'queries_page' else '' }}" href="{{ url_for('queries_page') }}">Queries</a>
+                <a class="nav-cta {{ 'active' if ep == 'mentors_page' else '' }}" href="{{ url_for('mentors_page') }}">Mentors</a>
+            </nav>
+        </div>
+    </header>
+    <main class="wrap">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert {{ 'error' if category == 'error' else 'ok' }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

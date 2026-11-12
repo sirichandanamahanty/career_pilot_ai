@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Mentors{% endblock %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Talk to a mentor on Google Meet - available 24/7</h1>
+        <p class="muted">Each session stores a Google Meet link. The link opens Google Meet so a new meeting can be started.</p>
+    </div>
+</section>
+
+{% for mentor in mentors %}
+<section class="card">
+    <h2>{{ mentor.name }}</h2>
+    <p class="muted">{{ mentor.email }}</p>
+    {% if mentor.sessions %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Time</th>
+                        <th>Meet link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in mentor.sessions %}
+                        <tr>
+                            <td>{{ session.student_name }}</td>
+                            <td>{{ session.session_time|when }}</td>
+                            <td><a class="button" href="{{ session.meet_link }}" target="_blank" rel="noopener noreferrer">Join Google Meet</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>No sessions stored for this mentor.</p>
+    {% endif %}
+</section>
+{% else %}
+<section class="card"><p>No mentors stored.</p></section>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Skills{% endblock %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Skills</h1>
+        <p class="muted">Skill names are unique. A skill used by a role or a course cannot be deleted.</p>
+    </div>
+    <a class="button" href="{{ url_for('skill_new') }}">Add skill</a>
+</section>
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Skill</th>
+                    <th>Category</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in skills %}
+                    <tr>
+                        <td>{{ skill.skill_name }}</td>
+                        <td>{{ skill.category }}</td>
+                        <td class="row-actions">
+                            <a class="button secondary" href="{{ url_for('skill_edit', skill_id=skill.skill_id) }}">Edit</a>
+                            <form method="post" action="{{ url_for('skill_delete', skill_id=skill.skill_id) }}" onsubmit="return confirm('Delete this skill? The database blocks the delete if a role or course still uses it.');">
+                                <button class="danger" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3">No skills yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

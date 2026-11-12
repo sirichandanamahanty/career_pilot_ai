@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit skill" if skill and skill.skill_id else "Add skill" }}{% endblock %}
+{% block content %}
+<section class="page-head">
+    <h1>{{ "Edit skill" if skill and skill.skill_id else "Add skill" }}</h1>
+</section>
+<section class="card">
+    {% if errors %}
+        <div class="alert error">
+            {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" class="form-grid">
+        <label>Skill name
+            <input name="skill_name" maxlength="80" required value="{{ skill.skill_name if skill else '' }}">
+        </label>
+        <label>Category
+            <input name="category" maxlength="50" required value="{{ skill.category if skill else '' }}">
+        </label>
+        <div class="form-actions">
+            <button type="submit">Save</button>
+            <a class="button secondary" href="{{ url_for('skills_list') }}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

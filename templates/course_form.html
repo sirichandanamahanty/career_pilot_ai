@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit course" if course and course.course_id else "Add course" }}{% endblock %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>{{ "Edit course" if course and course.course_id else "Add course" }}</h1>
+        <p class="muted">A price of 100 or more is rejected by chk_courses_price.</p>
+    </div>
+</section>
+<section class="card">
+    {% if errors %}
+        <div class="alert error">
+            {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" class="form-grid">
+        <label>Title
+            <input name="title" maxlength="150" required value="{{ course.title if course else '' }}">
+        </label>
+        <label>Skill
+            <select name="skill_id" required>
+                {% for skill in skills %}
+                    <option value="{{ skill.skill_id }}" {{ 'selected' if course and course.skill_id|string == skill.skill_id|string else '' }}>{{ skill.skill_name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Provider
+            <input name="provider" maxlength="80" required value="{{ course.provider if course else '' }}">
+        </label>
+        <label>Price
+            <input name="price" type="number" step="0.01" required value="{{ course.price if course else '' }}">
+        </label>
+        <label class="wide">URL
+            <input name="url" maxlength="500" required value="{{ course.url if course else '' }}">
+        </label>
+        <div class="form-actions">
+            <button type="submit">Save</button>
+            <a class="button secondary" href="{{ url_for('courses_list') }}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

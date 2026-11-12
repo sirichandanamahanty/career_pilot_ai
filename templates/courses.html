@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Courses{% endblock %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Courses</h1>
+        <p class="muted">Price must be 0 or more and less than 100. A course with enrollments cannot be deleted.</p>
+    </div>
+    <a class="button" href="{{ url_for('course_new') }}">Add course</a>
+</section>
+<section class="card">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Skill</th>
+                    <th>Provider</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                    <tr>
+                        <td><a href="{{ course.url }}" target="_blank" rel="noopener noreferrer">{{ course.title }}</a></td>
+                        <td>{{ course.skill_name }}</td>
+                        <td>{{ course.provider }}</td>
+                        <td>{{ course.price|inr }}</td>
+                        <td class="row-actions">
+                            <a class="button secondary" href="{{ url_for('course_edit', course_id=course.course_id) }}">Edit</a>
+                            <form method="post" action="{{ url_for('course_delete', course_id=course.course_id) }}" onsubmit="return confirm('Delete this course?');">
+                                <button class="danger" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5">No courses yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

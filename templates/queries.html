@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Queries{% endblock %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Queries</h1>
+        <p class="muted">These are the statements in <code>db/queries.sql</code>. The student id for the skill-gap query is bound as a parameter.</p>
+    </div>
+</section>
+
+<section class="query-grid">
+    {% for query in queries %}
+        <article class="card">
+            <h2>{{ query.number }}. {{ query.concept }}</h2>
+            <p>{{ query.title }}</p>
+            <form method="get" action="{{ url_for('queries_page') }}">
+                <input type="hidden" name="q" value="{{ query.key }}">
+                {% if query.needs_student %}
+                    <label>Student
+                        <select name="student_id" required>
+                            {% for student in students %}
+                                <option value="{{ student.student_id }}" {{ 'selected' if selected_student == student.student_id else '' }}>{{ student.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                {% endif %}
+                <button type="submit">Run query</button>
+            </form>
+        </article>
+    {% endfor %}
+</section>
+
+{% if result %}
+<section class="card">
+    <h2>{{ result.query.number }}. {{ result.query.title }}</h2>
+    {% if result.query.needs_student %}
+        <p class="hint">Bound parameter student_id = {{ result.student_id }}</p>
+    {% endif %}
+    <pre>{{ result.query.sql.strip() }}</pre>
+    {% if result.rows %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        {% for column in result.columns %}<th>{{ column }}</th>{% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in result.rows %}
+                        <tr>
+                            {% for column in result.columns %}
+                                <td>{{ row[column]|cell }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="muted">{{ result.rows|length }} row{{ '' if result.rows|length == 1 else 's' }}</p>
+    {% else %}
+        <p>No rows returned.</p>
+    {% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>{{ student.name }}</h1>
+        <p class="muted">{{ student.email }} · {{ student.branch }} · Year {{ student.year }} · {{ student.hours_per_week }} hours/week</p>
+    </div>
+    <a class="button secondary" href="{{ url_for('student_edit', student_id=student.student_id) }}">Edit profile</a>
+</section>
+
+<section class="card">
+    <div class="card-head">
+        <h2>Skills</h2>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Skill</th>
+                    <th>Category</th>
+                    <th>Level</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for skill in skills %}
+                    <tr>
+                        <td>{{ skill.skill_name }}</td>
+                        <td>{{ skill.category }}</td>
+                        <td>
+                            <span class="level" aria-label="Level {{ skill.level }} of 5">
+                                {% for mark in range(1, 6) %}
+                                    <i class="{{ 'on' if mark <= skill.level else '' }}"></i>
+                                {% endfor %}
+                            </span>
+                            {{ skill.level }}/5
+                        </td>
+                        <td>
+                            <form method="post" action="{{ url_for('remove_skill', student_id=student.student_id, skill_id=skill.skill_id) }}">
+                                <button class="danger" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4">No skills recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if available_skills %}
+        <form class="inline-fields" method="post" action="{{ url_for('add_skill', student_id=student.student_id) }}">
+            <label>
+                Add a skill
+                <select name="skill_id" required>
+                    {% for skill in available_skills %}
+                        <option value="{{ skill.skill_id }}">{{ skill.skill_name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                Level
+                <input name="level" type="number" step="1" required placeholder="1–5">
+            </label>
+            <button type="submit">Save skill</button>
+        </form>
+        <p class="hint">The database rejects a level outside 1–5. A before-insert trigger returns that message, and a check constraint blocks it on update as well.</p>
+    {% endif %}
+</section>
+
+<section class="card">
+    <h2>{% if goals %}Add another goal{% else %}Set a career goal{% endif %}</h2>
+    <form class="inline-fields" method="post" action="{{ url_for('set_goal', student_id=student.student_id) }}">
+        <label>
+            Role
+            <select name="role_id" required>
+                {% for role in roles %}
+                    <option value="{{ role.role_id }}">{{ role.role_name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">Save goal</button>
+    </form>
+</section>
+
+{% for goal in goals %}
+<section class="card">
+    <div class="card-head">
+        <div>
+            <h2>{{ goal.role_name }}</h2>
+            <p class="muted">{{ goal.description }}</p>
+        </div>
+        <form method="post" action="{{ url_for('generate_roadmap', student_id=student.student_id) }}">
+            <input type="hidden" name="goal_id" value="{{ goal.goal_id }}">
+            <button type="submit">Generate roadmap</button>
+        </form>
+    </div>
+
+    <p class="label">Readiness</p>
+    <div class="readiness">
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ goal.readiness_pct or 0 }}">
+            <span style="width: {{ goal.readiness_pct or 0 }}%"></span>
+        </div>
+        <strong>{{ goal.readiness_pct if goal.readiness_pct is not none else "—" }}%</strong>
+    </div>
+    <p class="hint">Readiness is the sum of the lower of the student level and the required level, divided by the sum of required levels, then multiplied by 100. A missing skill counts as 0. A level above the requirement does not raise the score further.</p>
+
+    <h3>Skill gaps</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Skill</th>
+                    <th>Priority</th>
+                    <th>Student</th>
+                    <th>Required</th>
+                    <th>Gap</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gap in goal.gaps %}
+                    <tr>
+                        <td>{{ gap.skill_name }}</td>
+                        <td><span class="badge {{ gap.priority|lower }}">{{ gap.priority }}</span></td>
+                        <td>{{ gap.student_level }}</td>
+                        <td>{{ gap.required_level }}</td>
+                        <td>{{ gap.gap }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5">No gaps. The recorded levels already meet this role.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Roadmap</h3>
+    {% if goal.roadmap %}
+        <p class="muted">Generated {{ goal.roadmap.generated_on|when }}. Phases come from the skill-gap view, High priority first.</p>
+        <ol class="phases">
+            {% for phase in goal.phases %}
+                <li>
+                    <strong>{{ phase.phase_order }}. {{ phase.phase_name }}</strong>
+                    <span class="muted">{{ phase.weeks }} week{% if phase.weeks != 1 %}s{% endif %}</span>
+                    <p>{{ phase.milestone }}</p>
+                </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <p class="muted">No roadmap yet. Generate one from the current skill gaps.</p>
+    {% endif %}
+
+    <h3>Recommended courses</h3>
+    <p class="hint">For each gap skill that has a course, this is the lowest price in the catalog. Enroll as Completed to raise the matching skill through the database trigger.</p>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Gap</th>
+                    <th>Course</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in goal.courses %}
+                    <tr>
+                        <td>{{ course.skill_name }} · gap {{ course.gap }}</td>
+                        <td>
+                            <a href="{{ course.url }}" target="_blank" rel="noopener noreferrer">{{ course.title }}</a>
+                            <div class="muted">{{ course.provider }}</div>
+                        </td>
+                        <td>{{ course.price|inr }}</td>
+                        <td>
+                            {% if course.course_id in enrolled %}
+                                <span class="badge">{{ enrolled[course.course_id] }}</span>
+                            {% else %}
+                                <form class="enroll-form" method="post" action="{{ url_for('enroll', student_id=student.student_id) }}">
+                                    <input type="hidden" name="course_id" value="{{ course.course_id }}">
+                                    <select name="status">
+                                        <option value="Started">Started</option>
+                                        <option value="Completed">Completed</option>
+                                    </select>
+                                    <button type="submit">Enroll</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4">No catalog course matches the remaining gaps.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endfor %}
+
+<section class="card">
+    <div class="card-head">
+        <h2>Enrollments</h2>
+        <a class="button secondary" href="{{ url_for('mentors_page') }}">Talk to a mentor on Google Meet - available 24/7</a>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Status</th>
+                    <th>Enrolled</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in enrollments %}
+                    <tr>
+                        <td>{{ enrollment.title }}</td>
+                        <td>{{ enrollment.status }}</td>
+                        <td>{{ enrollment.enrolled_on|when }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="3">No enrollments yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

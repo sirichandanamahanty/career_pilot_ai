@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit student" if student and student.student_id else "Add student" }}{% endblock %}
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>{{ "Edit student" if student and student.student_id else "Add student" }}</h1>
+        <p class="muted">Leave year outside 1–4, or hours outside 0–168, to see the database check message.</p>
+    </div>
+</section>
+<section class="card">
+    {% if errors %}
+        <div class="alert error">
+            {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" class="form-grid">
+        <label>Name
+            <input name="name" maxlength="100" required value="{{ student.name if student else '' }}">
+        </label>
+        <label>Email
+            <input name="email" maxlength="255" required value="{{ student.email if student else '' }}">
+        </label>
+        <label>Branch
+            <input name="branch" maxlength="80" required value="{{ student.branch if student else '' }}">
+        </label>
+        <label>Year
+            <input name="year" type="number" step="1" required value="{{ student.year if student else '' }}">
+        </label>
+        <label>Hours per week
+            <input name="hours_per_week" type="number" step="1" required value="{{ student.hours_per_week if student else '' }}">
+        </label>
+        <div class="form-actions">
+            <button type="submit">Save</button>
+            <a class="button secondary" href="{{ url_for('students_list') }}">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

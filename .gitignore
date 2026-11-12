@@ -1,0 +1,7 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.tools/mysql-8.4.9-winx64/
+.tools/mysql-data/
+.tools/mysql.zip
