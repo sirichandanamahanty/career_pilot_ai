@@ -834,6 +834,9 @@ def mentors_page():
             mentor["sessions"].append(row)
     return render_template("mentors.html", mentors=mentors)
 
-
+@app.get("/demo")
+def demo():
+    return render_template("demo.html")
+    
 if __name__ == "__main__":
     app.run(debug=True)
