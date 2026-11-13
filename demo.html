@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareerPilot AI | Demo</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f6fb;color:#20243a;font-family:Arial,sans-serif}
+header{background:#fff;padding:22px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ddd}
+header h2{margin:0;color:#6547ef}
+nav a{margin-left:20px;color:#555;text-decoration:none}
+main{max-width:1100px;margin:35px auto;padding:0 20px}
+h1{font-size:30px}
+.muted{color:#777}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin:25px 0}
+.card{background:white;border:1px solid #e5e5ef;border-radius:14px;padding:22px}
+.number{font-size:30px;font-weight:bold;color:#6547ef;margin-top:12px}
+section{background:white;padding:22px;border-radius:14px;margin:20px 0}
+table{width:100%;border-collapse:collapse}
+td,th{text-align:left;padding:14px;border-bottom:1px solid #eee}
+button{background:#6547ef;color:white;border:0;padding:10px 16px;border-radius:8px;cursor:pointer}
+.progress{height:9px;background:#eee;border-radius:9px;overflow:hidden}
+.progress span{display:block;height:100%;background:#6547ef}
+footer{text-align:center;color:#888;padding:25px}
+</style>
+</head>
+<body>
+<header>
+<h2>CareerPilot AI</h2>
+<nav><a href="#dashboard">Dashboard</a><a href="#students">Students</a><a href="#skills">Skills</a><a href="#courses">Courses</a></nav>
+</header>
+<main id="dashboard">
+<p class="muted">CAREER DEVELOPMENT PLATFORM</p>
+<h1>Welcome to CareerPilot AI 👋</h1>
+<p class="muted">Track skills, identify career gaps and plan your professional journey.</p>
+<div class="cards">
+<div class="card">Total Students<div class="number">120</div></div>
+<div class="card">Available Skills<div class="number">24</div></div>
+<div class="card">Career Roles<div class="number">8</div></div>
+<div class="card">Courses<div class="number">35</div></div>
+</div>
+<section id="students">
+<h2>Student Performance</h2>
+<table>
+<tr><th>Student</th><th>Branch</th><th>Goal</th><th>Readiness</th></tr>
+<tr><td>Rahul Kumar</td><td>CSE</td><td>Python Developer</td><td>75%</td></tr>
+<tr><td>Ananya Sharma</td><td>CSE</td><td>Data Analyst</td><td>82%</td></tr>
+<tr><td>Arjun Reddy</td><td>IT</td><td>Web Developer</td><td>60%</td></tr>
+</table>
+</section>
+<section id="skills">
+<h2>Skill Progress</h2>
+<p>Python</p><div class="progress"><span style="width:80%"></span></div>
+<p>SQL</p><div class="progress"><span style="width:65%"></span></div>
+<p>Java</p><div class="progress"><span style="width:55%"></span></div>
+<p>Communication</p><div class="progress"><span style="width:75%"></span></div>
+</section>
+<section id="courses">
+<h2>Recommended Courses</h2>
+<table>
+<tr><th>Course</th><th>Provider</th><th>Price</th></tr>
+<tr><td>Python Fundamentals</td><td>Coursera</td><td>Free demo</td></tr>
+<tr><td>SQL for Beginners</td><td>Infosys</td><td>Free demo</td></tr>
+<tr><td>Web Development</td><td>Microsoft Learn</td><td>Free</td></tr>
+</table>
+</section>
+<section>
+<h2>DBMS Concepts Demonstrated</h2>
+<ul>
+<li>Relational tables and primary keys</li>
+<li>Foreign key relationships</li>
+<li>SQL joins and aggregate queries</li>
+<li>Views for skill gaps and readiness</li>
+<li>Stored procedures for roadmap generation</li>
+<li>Triggers for course completion updates</li>
+<li>Transactions and rollback</li>
+</ul>
+<p class="muted">This is a sample-data demonstration. Database operations are not active on this demo page.</p>
+</section>
+</main>
+<footer>CareerPilot AI | DBMS Mini Project Demonstration</footer>
+</body>
+</html>
