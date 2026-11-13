@@ -8,7 +8,7 @@ from flask import Flask, abort, flash, redirect, render_template, request, url_f
 from database import call_procedure, execute, fetch_all, fetch_one, run_select
 from queries import QUERIES, QUERY_BY_KEY
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=".")
 app.secret_key = os.getenv("SECRET_KEY", "careerpilot-dev")
 
 
